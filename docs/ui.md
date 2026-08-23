@@ -18,3 +18,17 @@ Nginx routes `/api/*` → `http://gateway:8080/` so the browser stays same-origi
 ## Interaction model
 
 Buttons trigger `POST /api/runs`. There is no chat box and no background queue — each click is one on-demand agent run through the mock brain.
+
+## Controls behavior
+
+| Control | Effect |
+| --- | --- |
+| Agent buttons | Select which principal / allowlist / namespace applies |
+| Task buttons | Ask mock brain to plan tools for that task, then gateway enforces policy |
+| Kill switch | Disable selected agent → all tasks DENY |
+| Enable agent | Re-enable |
+| Clear attestation | Only blocks **Payout Approver** (`claims-prod`). Sandbox agents still ALLOW |
+| Set attested | Required again for Payout Approver |
+
+See [demo-behaviors.md](./demo-behaviors.md) for the full ALLOW/DENY matrix (including why “Clear attestation + Read claim” on Intake still allows).
+

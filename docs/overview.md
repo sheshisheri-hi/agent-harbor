@@ -16,3 +16,5 @@ mcp-claims (fake tools + in-memory claim data)
 **On-demand:** agents are not queue workers. Each UI click starts one run.
 
 **Showcase intent:** the brain may *plan* a privileged tool (e.g. `approve_payout`); the **gateway** decides whether that agent is allowed to execute it.
+
+Expected click results (including attestation): [demo-behaviors.md](./demo-behaviors.md).

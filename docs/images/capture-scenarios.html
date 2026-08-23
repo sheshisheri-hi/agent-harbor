@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AgentHarbor scenario captures</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b1220; color: #e8eefc; margin: 1.5rem; }
+    .card { border: 1px solid #243149; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; background: #121a2b; }
+    .allow { border-left: 6px solid #1f8f5f; }
+    .deny { border-left: 6px solid #c23b4a; }
+    h1 { font-size: 1.25rem; }
+    pre { white-space: pre-wrap; font-size: 0.85rem; background: #0a101c; padding: 0.75rem; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>AgentHarbor — live scenario captures</h1>
+  <div id="out">Running…</div>
+  <script>
+    const API = "http://127.0.0.1:8080";
+    async function run(label, body, setup) {
+      if (setup) await setup();
+      const res = await fetch(API + "/runs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      return { label, data };
+    }
+    (async () => {
+      await fetch(API + "/agents/claims-intake-bot/enable", { method: "POST" });
+      await fetch(API + "/agents/payout-approver-bot/enable", { method: "POST" });
+      await fetch(API + "/agents/payout-approver-bot/attestation?attested=true", { method: "POST" });
+
+      const scenarios = [];
+      scenarios.push(await run("Intake · Read claim (expect ALLOW)", {
+        agent_id: "claims-intake-bot", task_id: "read_claim", claim_id: "CLM-10042"
+      }));
+      scenarios.push(await run("Intake · Approve payout (expect DENY RBAC)", {
+        agent_id: "claims-intake-bot", task_id: "approve_payout", claim_id: "CLM-10042"
+      }));
+      scenarios.push(await run("Payout · Clear attestation · Read claim (expect DENY attestation)", {
+        agent_id: "payout-approver-bot", task_id: "read_claim", claim_id: "CLM-10042"
+      }, async () => {
+        await fetch(API + "/agents/payout-approver-bot/attestation?attested=false", { method: "POST" });
+      }));
+
+      const host = document.getElementById("out");
+      host.innerHTML = scenarios.map(s => {
+        const d = s.data.overall_decision;
+        const cls = d === "ALLOW" ? "allow" : "deny";
+        const reason = (s.data.steps || []).map(x => x.tool + ": " + x.decision + " — " + x.reason).join("\n");
+        return `<div class="card ${cls}"><strong>${s.label}</strong><div>${d}</div><pre>${reason}</pre></div>`;
+      }).join("");
+      document.title = "capture-ready";
+    })().catch(e => { document.getElementById("out").textContent = String(e); });
+  </script>
+</body>
+</html>

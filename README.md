@@ -28,6 +28,7 @@ AgentHarbor borrows ideas from the broader identity and agent-tooling ecosystem:
 | --- | --- |
 | [docs/README.md](docs/README.md) | Doc index |
 | [docs/overview.md](docs/overview.md) | End-to-end flow |
+| [docs/demo-behaviors.md](docs/demo-behaviors.md) | ALLOW/DENY matrix (attestation, RBAC, kill switch) |
 | [docs/mock-brain.md](docs/mock-brain.md) | Simulated LLM planner |
 | [docs/gateway.md](docs/gateway.md) | Policy gateway |
 | [docs/mcp-claims.md](docs/mcp-claims.md) | Claims tool twin |
@@ -57,8 +58,12 @@ Suggested clicks:
 
 1. **Claims Intake** → **Read claim** → ALLOW  
 2. **Claims Intake** → **Approve payout** → DENY (not on allowlist)  
-3. **Payout Approver** → **Approve payout** → ALLOW  
-4. **Kill switch** → Approve again → DENY  
+3. **Claims Intake** → **Clear attestation** → **Read claim** → still **ALLOW** (sandbox ignores attestation)  
+4. **Payout Approver** → **Clear attestation** → **Read claim** → **DENY** (prod requires attestation)  
+5. **Payout Approver** → **Set attested** → **Approve payout** → ALLOW  
+6. **Kill switch** → Approve again → DENY  
+
+Full matrix: [docs/demo-behaviors.md](docs/demo-behaviors.md).
 
 Also:
 

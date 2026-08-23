@@ -33,9 +33,18 @@
 
 ## Policy rules (v1)
 
-1. Disabled agent → DENY (`kill switch`)  
-2. `claims-prod` without `attested` → DENY  
-3. Tool not in `allowed_tools` → DENY  
-4. Else → ALLOW and invoke mcp-claims  
+Evaluated **in order** for each planned tool:
+
+1. Disabled agent → **DENY** (`agent disabled (kill switch)`)  
+2. Namespace is `claims-prod` **and** not attested → **DENY** (`missing attestation for claims-prod namespace`)  
+3. Tool not in `allowed_tools` → **DENY**  
+4. Else → **ALLOW** and invoke mcp-claims  
+
+### Attestation nuance
+
+- **`claims-sandbox` agents** (Intake, Fraud): clearing attestation does **nothing**. Read claim still **ALLOW**.  
+- **`claims-prod` agent** (Payout): clearing attestation **DENY**s every tool, including `get_claim` / Read claim.
+
+Full click matrix: [demo-behaviors.md](./demo-behaviors.md).
 
 State is **in-memory** (resets on container restart). Fine for the educational showcase.
