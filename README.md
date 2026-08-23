@@ -4,25 +4,45 @@ Personal **educational showcase** of an AI agent security control plane: identit
 
 > **Disclaimer:** This is a personal learning / portfolio project. Do not use it as production security infrastructure.
 
+## Mock LLM brain (important)
+
+AgentHarbor uses a **deterministic mock LLM** (`gateway/app/brain.py`).  
+
+- **No** OpenAI / Anthropic / other remote model calls  
+- The “brain” only returns a **fixed tool plan** for each UI task  
+- The **gateway** then allows or denies each tool (RBAC, kill switch, attestation)  
+
+That split is intentional: you can demo security decisions without paying for or depending on a real model. See [docs/mock-brain.md](docs/mock-brain.md).
+
 ## Landscape credit
 
 AgentHarbor borrows ideas from the broader identity and agent-tooling ecosystem:
 
-- **Okta / Microsoft Entra** — enterprise IdP patterns (OIDC, RBAC, app roles)
-- **Ory** — open-source identity & access building blocks
-- **MCP (Model Context Protocol)** — tool-oriented agent interfaces
+- **Okta / Microsoft Entra** — enterprise IdP / agent-identity patterns  
+- **Ory / Keycloak** — open-source OAuth/OIDC building blocks  
+- **MCP** — tool-oriented agent interfaces  
 
-Vision and planning notes live in the sibling repo/folder [`plan-ai-systems-ideas`](../plan-ai-systems-ideas) (not published as part of this compose stack).
+## Docs (components)
+
+| Doc | Topic |
+| --- | --- |
+| [docs/README.md](docs/README.md) | Doc index |
+| [docs/overview.md](docs/overview.md) | End-to-end flow |
+| [docs/mock-brain.md](docs/mock-brain.md) | Simulated LLM planner |
+| [docs/gateway.md](docs/gateway.md) | Policy gateway |
+| [docs/mcp-claims.md](docs/mcp-claims.md) | Claims tool twin |
+| [docs/ui.md](docs/ui.md) | Demo UI |
+| [docs/keycloak.md](docs/keycloak.md) | IdP in Compose |
 
 ## Stack (local)
 
-| Service     | Role                         | Port  |
-|-------------|------------------------------|-------|
-| `ui`        | Static demo UI               | 3000  |
-| `gateway`   | FastAPI RBAC gateway stub    | 8080  |
-| `keycloak`  | IdP (dev mode + realm import)| 8081  |
-| `mcp-claims`| Fake MCP claims tools API    | 8090  |
-| `postgres`  | Keycloak database            | 5432  |
+| Service | Role | Port |
+| --- | --- | --- |
+| `ui` | Demo UI (buttons, ALLOW/DENY, audit) | 3000 |
+| `gateway` | Mock brain + RBAC + audit + kill switch | 8080 |
+| `keycloak` | IdP (dev + realm import) | 8081 |
+| `mcp-claims` | Fake claims tools | 8090 |
+| `postgres` | Keycloak database | 5432 |
 
 ## Quick start
 
@@ -31,24 +51,22 @@ cp .env.example .env
 docker compose up --build
 ```
 
-- UI: http://localhost:3000  
-- Gateway: http://localhost:8080/health  
+Open **http://localhost:3000**
+
+Suggested clicks:
+
+1. **Claims Intake** → **Read claim** → ALLOW  
+2. **Claims Intake** → **Approve payout** → DENY (not on allowlist)  
+3. **Payout Approver** → **Approve payout** → ALLOW  
+4. **Kill switch** → Approve again → DENY  
+
+Also:
+
+- Gateway health: http://localhost:8080/health  
 - Keycloak: http://localhost:8081 (admin from `.env`)  
-- MCP claims: http://localhost:8090/health  
+- Claims tools: http://localhost:8090/tools  
 
-Demo realm: **agentharbor** — user `demo` / `demo` (change in realm JSON / `.env` for anything beyond local play).
-
-Optional wait helper:
-
-```bash
-./scripts/wait-for.sh localhost 8080
-```
-
-## What’s stubbed vs next
-
-- Gateway lists three demo agents; authZ/audit/kill-switch are placeholders.
-- MCP claims exposes fake tool endpoints for claims workflows.
-- UI buttons say “coming soon” — branded shell only.
+Demo realm: **agentharbor** — user `demo` / `demo` (local only).
 
 ## License / intent
 

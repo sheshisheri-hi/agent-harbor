@@ -12,6 +12,8 @@
       --muted: #9aaccc;
       --accent: #3d9cf0;
       --line: #243149;
+      --allow: #1f8f5f;
+      --deny: #c23b4a;
     }
     * { box-sizing: border-box; }
     body {
@@ -24,67 +26,48 @@
         radial-gradient(900px 500px at 100% 0%, #0f2a3d 0%, transparent 50%),
         var(--bg);
     }
-    header {
-      padding: 2.5rem 1.5rem 1rem;
-      max-width: 880px;
-      margin: 0 auto;
+    header, main, footer { max-width: 960px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+    header { padding-top: 2rem; padding-bottom: 0.5rem; }
+    .brand { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 0.4rem; }
+    .tag { color: var(--muted); margin: 0; line-height: 1.5; max-width: 46rem; }
+    .badge {
+      display: inline-block; margin-top: 0.75rem; font-size: 0.75rem;
+      border: 1px solid var(--line); border-radius: 999px; padding: 0.25rem 0.7rem; color: var(--muted);
     }
-    .brand {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin: 0 0 0.4rem;
-    }
-    .tag {
-      color: var(--muted);
-      margin: 0;
-      max-width: 42rem;
-      line-height: 1.5;
-    }
-    main {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 1rem 1.5rem 3rem;
-      display: grid;
-      gap: 1rem;
-    }
+    main { display: grid; gap: 1rem; padding: 1rem 1.5rem 2rem; }
     section {
       background: color-mix(in srgb, var(--panel) 92%, white 8%);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 1.25rem 1.35rem;
+      border: 1px solid var(--line); border-radius: 12px; padding: 1.15rem 1.25rem;
     }
-    h2 {
-      margin: 0 0 0.75rem;
-      font-size: 1.05rem;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-    }
+    h2 { margin: 0 0 0.75rem; font-size: 1.05rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.55rem; }
     button {
-      appearance: none;
-      border: 1px solid var(--line);
-      background: #182338;
-      color: var(--ink);
-      padding: 0.65rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.95rem;
+      appearance: none; border: 1px solid var(--line); background: #182338;
+      color: var(--ink); padding: 0.6rem 0.95rem; border-radius: 8px; cursor: pointer; font-size: 0.92rem;
     }
     button:hover { border-color: var(--accent); }
-    .hint {
-      margin: 0.85rem 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
+    button.active { border-color: var(--accent); background: #1d3a5c; }
+    button.danger { border-color: #6a3038; }
+    .meta { color: var(--muted); font-size: 0.88rem; margin: 0.75rem 0 0; line-height: 1.45; }
+    .pill {
+      display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px;
+      font-size: 0.75rem; border: 1px solid var(--line); margin-right: 0.35rem;
     }
-    footer {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 0 1.5rem 2rem;
-      color: var(--muted);
-      font-size: 0.8rem;
+    .result-allow { color: #b6f0d0; border-left: 4px solid var(--allow); padding-left: 0.75rem; }
+    .result-deny { color: #ffc9cf; border-left: 4px solid var(--deny); padding-left: 0.75rem; }
+    pre {
+      background: #0a101c; border: 1px solid var(--line); border-radius: 8px;
+      padding: 0.75rem; overflow: auto; font-size: 0.78rem; max-height: 280px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th, td { text-align: left; padding: 0.4rem 0.35rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    .allow { color: #7ddea8; font-weight: 700; }
+    .deny { color: #ff8f9a; font-weight: 700; }
+    footer { color: var(--muted); font-size: 0.8rem; padding-bottom: 2rem; }
+    select {
+      background: #182338; color: var(--ink); border: 1px solid var(--line);
+      border-radius: 8px; padding: 0.5rem 0.65rem;
     }
   </style>
 </head>
@@ -92,42 +75,211 @@
   <header>
     <h1 class="brand">AgentHarbor</h1>
     <p class="tag">
-      Personal educational showcase for an AI agent security control plane —
-      identity, namespaces, RBAC gateway, audit, and kill switch — with an
-      insurance claims demo. Not a production product.
+      Safe harbor for AI agents: identity, namespaces, RBAC gateway, audit, and kill switch.
+      Insurance claims demo with a <strong>deterministic mock LLM brain</strong> (no remote model calls).
     </p>
+    <span class="badge">Educational showcase · mock brain · Docker Compose</span>
   </header>
+
   <main>
     <section>
-      <h2>Agents</h2>
-      <div class="row">
-        <button type="button" onclick="soon('Claims Triage')">Claims Triage</button>
-        <button type="button" onclick="soon('Policy Lookup')">Policy Lookup</button>
-        <button type="button" onclick="soon('Fraud Signal')">Fraud Signal</button>
-      </div>
-      <p class="hint" id="agent-msg">Select an agent — interactive flows coming soon.</p>
+      <h2>1. Select agent</h2>
+      <div class="row" id="agent-buttons"></div>
+      <p class="meta" id="policy-card">Loading agents…</p>
     </section>
+
     <section>
-      <h2>Tasks</h2>
-      <div class="row">
-        <button type="button" onclick="soon('Open FNOL')">Open FNOL</button>
-        <button type="button" onclick="soon('Run policy check')">Run policy check</button>
-        <button type="button" onclick="soon('Kill switch')">Kill switch</button>
+      <h2>2. Claim + task</h2>
+      <div class="row" style="align-items:center; margin-bottom:0.75rem;">
+        <label for="claim">Claim</label>
+        <select id="claim">
+          <option value="CLM-10042">CLM-10042</option>
+          <option value="CLM-10088">CLM-10088</option>
+          <option value="CLM-10103">CLM-10103</option>
+        </select>
       </div>
-      <p class="hint" id="task-msg">Task orchestration UI coming soon.</p>
+      <div class="row" id="task-buttons"></div>
+      <p class="meta">Same task buttons for every agent — policy decides ALLOW vs DENY.</p>
+    </section>
+
+    <section>
+      <h2>3. Controls</h2>
+      <div class="row">
+        <button type="button" class="danger" id="btn-kill">Kill switch (disable)</button>
+        <button type="button" id="btn-enable">Enable agent</button>
+        <button type="button" id="btn-attest-off">Clear attestation</button>
+        <button type="button" id="btn-attest-on">Set attested</button>
+        <button type="button" id="btn-refresh-audit">Refresh audit</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Result</h2>
+      <div id="result" class="meta">Run a task to see mock-brain plan + gateway decision.</div>
+      <pre id="result-json" hidden></pre>
+    </section>
+
+    <section>
+      <h2>Audit log (ALLOW and DENY)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th><th>Agent</th><th>Tool</th><th>Decision</th><th>Reason</th>
+          </tr>
+        </thead>
+        <tbody id="audit-body">
+          <tr><td colspan="5" class="meta">No events yet</td></tr>
+        </tbody>
+      </table>
     </section>
   </main>
+
   <footer>
-    AgentHarbor · Keycloak IdP · Docker Compose · educational portfolio only
+    AgentHarbor · Mock LLM brain (deterministic) · Keycloak IdP in Compose · not production security software
   </footer>
+
   <script>
-    function soon(label) {
-      const el = document.getElementById(label.includes('FNOL') || label.includes('policy') || label.includes('Kill') ? 'task-msg' : 'agent-msg');
-      const target = ['Open FNOL', 'Run policy check', 'Kill switch'].includes(label)
-        ? document.getElementById('task-msg')
-        : document.getElementById('agent-msg');
-      target.textContent = label + ' — coming soon (AgentHarbor demo shell).';
+    const API = "/api";
+    let selectedAgent = "claims-intake-bot";
+    let agents = [];
+
+    const TASKS = [
+      { id: "read_claim", label: "Read claim" },
+      { id: "add_note", label: "Add note" },
+      { id: "flag_fraud", label: "Flag fraud" },
+      { id: "approve_payout", label: "Approve payout" },
+      { id: "export_pii", label: "Export PII" },
+    ];
+
+    async function api(path, opts) {
+      const res = await fetch(API + path, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || JSON.stringify(data) || res.statusText);
+      return data;
     }
+
+    function currentAgent() {
+      return agents.find(a => a.id === selectedAgent);
+    }
+
+    function renderAgents() {
+      const host = document.getElementById("agent-buttons");
+      host.innerHTML = "";
+      agents.forEach(a => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = a.name;
+        if (a.id === selectedAgent) b.classList.add("active");
+        b.onclick = () => { selectedAgent = a.id; renderAgents(); renderPolicy(); };
+        host.appendChild(b);
+      });
+      renderPolicy();
+    }
+
+    function renderPolicy() {
+      const a = currentAgent();
+      const el = document.getElementById("policy-card");
+      if (!a) { el.textContent = "No agent selected"; return; }
+      el.innerHTML =
+        `<span class="pill">${a.id}</span>` +
+        `<span class="pill">${a.namespace}</span>` +
+        `<span class="pill">${a.enabled ? "enabled" : "DISABLED"}</span>` +
+        `<span class="pill">${a.attested ? "attested" : "not attested"}</span>` +
+        `<br/>Allowlist: <code>${a.allowed_tools.join(", ")}</code>`;
+    }
+
+    function renderTasks() {
+      const host = document.getElementById("task-buttons");
+      host.innerHTML = "";
+      TASKS.forEach(t => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = t.label;
+        b.onclick = () => runTask(t.id);
+        host.appendChild(b);
+      });
+    }
+
+    async function runTask(taskId) {
+      const claimId = document.getElementById("claim").value;
+      const result = document.getElementById("result");
+      const pre = document.getElementById("result-json");
+      result.textContent = "Running mock brain…";
+      pre.hidden = true;
+      try {
+        const data = await api("/runs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            agent_id: selectedAgent,
+            task_id: taskId,
+            claim_id: claimId,
+            user_id: "demo-user",
+          }),
+        });
+        const ok = data.overall_decision === "ALLOW";
+        result.className = ok ? "result-allow" : "result-deny";
+        const denied = (data.steps || []).find(s => s.decision === "DENY");
+        result.innerHTML =
+          `<strong>${data.overall_decision}</strong> · agent <code>${selectedAgent}</code> · task <code>${taskId}</code><br/>` +
+          `Brain: ${data.brain.mode} — planned [${(data.brain.planned_tools || []).join(", ")}]<br/>` +
+          (denied ? `Deny reason: ${denied.reason}` : "All planned tools allowed and executed against the claims twin.");
+        pre.hidden = false;
+        pre.textContent = JSON.stringify(data, null, 2);
+        agents = (await api("/agents")).agents;
+        renderAgents();
+        await loadAudit();
+      } catch (err) {
+        result.className = "result-deny";
+        result.textContent = "Error: " + err.message;
+      }
+    }
+
+    async function loadAudit() {
+      const rows = await api("/audit?limit=30");
+      const body = document.getElementById("audit-body");
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="5" class="meta">No events yet</td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(e => `
+        <tr>
+          <td>${e.timestamp.replace("T", " ").slice(0, 19)}</td>
+          <td>${e.agent_id}<br/><span class="meta">${e.namespace}</span></td>
+          <td>${e.tool}</td>
+          <td class="${e.decision === "ALLOW" ? "allow" : "deny"}">${e.decision}</td>
+          <td>${e.reason}</td>
+        </tr>`).join("");
+    }
+
+    async function refreshAgents() {
+      const data = await api("/agents");
+      agents = data.agents;
+      renderAgents();
+    }
+
+    document.getElementById("btn-kill").onclick = async () => {
+      await api(`/agents/${selectedAgent}/disable`, { method: "POST" });
+      await refreshAgents();
+    };
+    document.getElementById("btn-enable").onclick = async () => {
+      await api(`/agents/${selectedAgent}/enable`, { method: "POST" });
+      await refreshAgents();
+    };
+    document.getElementById("btn-attest-off").onclick = async () => {
+      await api(`/agents/${selectedAgent}/attestation?attested=false`, { method: "POST" });
+      await refreshAgents();
+    };
+    document.getElementById("btn-attest-on").onclick = async () => {
+      await api(`/agents/${selectedAgent}/attestation?attested=true`, { method: "POST" });
+      await refreshAgents();
+    };
+    document.getElementById("btn-refresh-audit").onclick = loadAudit;
+
+    renderTasks();
+    refreshAgents().then(loadAudit).catch(err => {
+      document.getElementById("policy-card").textContent = "Cannot reach gateway: " + err.message;
+    });
   </script>
 </body>
 </html>
