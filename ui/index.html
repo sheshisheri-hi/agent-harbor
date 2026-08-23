@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgentHarbor</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --ink: #e8eefc;
+      --muted: #9aaccc;
+      --accent: #3d9cf0;
+      --line: #243149;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #1a3358 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #0f2a3d 0%, transparent 50%),
+        var(--bg);
+    }
+    header {
+      padding: 2.5rem 1.5rem 1rem;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    .brand {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.4rem;
+    }
+    .tag {
+      color: var(--muted);
+      margin: 0;
+      max-width: 42rem;
+      line-height: 1.5;
+    }
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 3rem;
+      display: grid;
+      gap: 1rem;
+    }
+    section {
+      background: color-mix(in srgb, var(--panel) 92%, white 8%);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.25rem 1.35rem;
+    }
+    h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.05rem;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #182338;
+      color: var(--ink);
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    button:hover { border-color: var(--accent); }
+    .hint {
+      margin: 0.85rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="brand">AgentHarbor</h1>
+    <p class="tag">
+      Personal educational showcase for an AI agent security control plane —
+      identity, namespaces, RBAC gateway, audit, and kill switch — with an
+      insurance claims demo. Not a production product.
+    </p>
+  </header>
+  <main>
+    <section>
+      <h2>Agents</h2>
+      <div class="row">
+        <button type="button" onclick="soon('Claims Triage')">Claims Triage</button>
+        <button type="button" onclick="soon('Policy Lookup')">Policy Lookup</button>
+        <button type="button" onclick="soon('Fraud Signal')">Fraud Signal</button>
+      </div>
+      <p class="hint" id="agent-msg">Select an agent — interactive flows coming soon.</p>
+    </section>
+    <section>
+      <h2>Tasks</h2>
+      <div class="row">
+        <button type="button" onclick="soon('Open FNOL')">Open FNOL</button>
+        <button type="button" onclick="soon('Run policy check')">Run policy check</button>
+        <button type="button" onclick="soon('Kill switch')">Kill switch</button>
+      </div>
+      <p class="hint" id="task-msg">Task orchestration UI coming soon.</p>
+    </section>
+  </main>
+  <footer>
+    AgentHarbor · Keycloak IdP · Docker Compose · educational portfolio only
+  </footer>
+  <script>
+    function soon(label) {
+      const el = document.getElementById(label.includes('FNOL') || label.includes('policy') || label.includes('Kill') ? 'task-msg' : 'agent-msg');
+      const target = ['Open FNOL', 'Run policy check', 'Kill switch'].includes(label)
+        ? document.getElementById('task-msg')
+        : document.getElementById('agent-msg');
+      target.textContent = label + ' — coming soon (AgentHarbor demo shell).';
+    }
+  </script>
+</body>
+</html>
