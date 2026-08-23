@@ -4,6 +4,28 @@ Personal **educational showcase** of an AI agent security control plane: identit
 
 > **Disclaimer:** This is a personal learning / portfolio project. Do not use it as production security infrastructure.
 
+## Why I started this
+
+Enterprise IAM solved humans and apps. The **agentic world** is different: models don’t just answer — they **take actions** (tools, APIs, code changes, alerts, host config) often through loops that are not deterministic and often through runtimes (Copilot SDK, orchestrators, MCP) that hide the real effect behind “just an LLM response.”
+
+Industry is moving fast:
+
+- **Protocols** — MCP for tools, A2A for agent collaboration  
+- **IdPs** — Okta, Microsoft Entra Agent ID, Ory/Keycloak for tokens and agent identity  
+- **Startups** — control planes (e.g. Agentic Fabriq), runtime guards (e.g. Silmaril), attestation (e.g. Klaimee), sandboxes (e.g. Arga Labs)
+
+Those pieces matter, but demos often show only the **happy path**. What was missing for me was a **visible harbor story**:
+
+- Agents as **first-class principals** (not one shared API key)  
+- **Namespaces** with blast radius (sandbox vs prod)  
+- Every effect attempt checked at a **gateway** — ALLOW and **DENY**, with reasons  
+- **Audit** you can show to security and platform teams  
+- A **kill switch** when an agent misbehaves  
+
+**AgentHarbor** is my independent proof of concept for that layer. It does **not** replace MCP or your IdP — it explores what **harbor control** should feel like when agents call tools today and when tomorrow’s agents mutate git, files, hosts, or prod systems through SDKs and orchestrator stages.
+
+This repo is where I learn by building: mock brain for reproducible demos, Docker Compose for a runnable stack, and docs that spell out expected behavior (including when attestation applies and when it does not).
+
 ## Mock LLM brain (important)
 
 AgentHarbor uses a **deterministic mock LLM** (`gateway/app/brain.py`).  
@@ -16,11 +38,14 @@ That split is intentional: you can demo security decisions without paying for or
 
 ## Landscape credit
 
-AgentHarbor borrows ideas from the broader identity and agent-tooling ecosystem:
+AgentHarbor is an **independent learning project**. It builds on ideas from the broader ecosystem — it is not affiliated with or endorsed by these vendors:
 
-- **Okta / Microsoft Entra** — enterprise IdP / agent-identity patterns  
-- **Ory / Keycloak** — open-source OAuth/OIDC building blocks  
-- **MCP** — tool-oriented agent interfaces  
+- **Okta / Auth0 / Microsoft Entra** — agent-as-principal, MCP auth, token vault, governance  
+- **Ory / Keycloak** — OAuth/OIDC for securing tool servers  
+- **MCP / A2A** — how agents connect to tools and to each other  
+- **Patterns from** Agentic Fabriq (identity/governance), Silmaril (runtime outcomes), Klaimee (attestation), Arga Labs (twins/sandboxes)
+
+Planning notes and the original idea shortlist live in the sibling folder [`plan-ai-systems-ideas`](../plan-ai-systems-ideas).
 
 ## Docs (components)
 
